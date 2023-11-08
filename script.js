@@ -134,17 +134,19 @@ function checkGame(event) {
             --nextInLine;
         }
         boardState[mx][nextInLine] = playerTurn;
-        ++gameCount;
         drawBoard();
         if (checkWin(mx, nextInLine)) {
             displayedText.innerHTML = "Player " + (playerTurn + 1) + " wins!";
             gameOver = true;
-        } else if (gameCount === 42) {
+        } else if (gameCount === 41) {
             displayedText.innerHTML = "The game is a draw!";
             gameOver = true;
         } else {
-            playerTurn = ++playerTurn % 2;
-            displayedText.innerHTML = "Player " + (playerTurn + 1) + " to choose!";
+            if (nextInLine >= 0) {
+                playerTurn = ++playerTurn % 2;
+                ++gameCount;
+                displayedText.innerHTML = "Player " + (playerTurn + 1) + " to choose!";
+            }
         }
     }
 }
