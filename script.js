@@ -1,7 +1,10 @@
 const gameCanvas = document.getElementById("gameCanvas");
 const ctx = gameCanvas.getContext("2d");
 const displayedText = document.getElementById("displayedText");
-const figureSize = 30;
+const boardWidth = 700;
+const boardHeight = 600;
+const columnWidth = boardWidth / 7;
+const figureSize = columnWidth * 0.3;
 
 let boardState = [[2, 2, 2, 2, 2, 2], 
                     [2, 2, 2, 2, 2, 2], 
@@ -32,16 +35,16 @@ function drawCircle(x, y, color) {
 }
 
 function drawBoard() {
-    drawLine(0, 0, 700, 0);
-    drawLine(700, 0, 700, 600);
-    drawLine(700, 600, 0, 600);
-    drawLine(0, 600, 0, 0);
+    drawLine(0, 0, boardWidth, 0);
+    drawLine(boardWidth, 0, boardWidth, boardHeight);
+    drawLine(boardWidth, boardHeight, 0, boardHeight);
+    drawLine(0, boardHeight, 0, 0);
     for (let i = 1; i < 7; ++i) {
-        drawLine(100 * i, 0, 100 * i, 600);    
+        drawLine(columnWidth * i, 0, columnWidth * i, boardHeight);    
     }
     for (let i = 0; i < 7; ++i) {
         for (let j = 0; j < 6; ++j) {
-            drawCircle(i * 100 + 50, j * 100 + 50, boardColors[boardState[i][j]]);
+            drawCircle(i * columnWidth + columnWidth / 2, j * columnWidth + columnWidth / 2, boardColors[boardState[i][j]]);
         }
     }
 }
@@ -56,15 +59,19 @@ function resetBoard() {
     gameCount = 0;
 }
 
+function displayMessage(message) {
+    displayedText.innerHTML = message;
+}
+
 function startGame() {
     gameCanvas.hidden = false;
     displayedText.hidden = false;
     playerTurn = 0;
     gameCount = 0;
     gameOver = false;
-    displayedText.innerHTML = "Player " + (playerTurn + 1) + " to choose!";
+    displayMessage("Player " + (playerTurn + 1) + " to choose!");
     resetBoard();
-    ctx.clearRect(0, 0, 700, 600);
+    ctx.clearRect(0, 0, boardWidth, boardHeight);
     drawBoard();
 }
 
@@ -136,16 +143,16 @@ function checkGame(event) {
         boardState[mx][nextInLine] = playerTurn;
         drawBoard();
         if (checkWin(mx, nextInLine)) {
-            displayedText.innerHTML = "Player " + (playerTurn + 1) + " wins!";
+            displayMessage("Player " + (playerTurn + 1) + " wins!");
             gameOver = true;
         } else if (gameCount === 41) {
-            displayedText.innerHTML = "The game is a draw!";
+            displayMessage("The game is a draw!");
             gameOver = true;
         } else {
             if (nextInLine >= 0) {
                 playerTurn = ++playerTurn % 2;
                 ++gameCount;
-                displayedText.innerHTML = "Player " + (playerTurn + 1) + " to choose!";
+                displayMessage("Player " + (playerTurn + 1) + " to choose!");
             }
         }
     }
